@@ -1,42 +1,59 @@
 class Artist
-  class Artist
-   extend Concerns::Findable
-   attr_accessor :name, :songs
+  attr_accessor :name, :song, :musiclibrarycontroller, :musicimporter
+  extend Concerns::Findable
+  @@all = []
 
-    @@all = []
+  def initialize(name)
+    @name = name
+    @songs = []
+  end
 
-    def initialize(name)
-     @name = name
-     @@all << self
-     @songs = []
+  def self.all
+    @@all
+  end
 
+  def self.destroy_all
+    @@all.clear
+  end
+
+  def save
+    @@all << self
+  end
+
+  def self.create(artist)
+    artist = self.new(artist)
+    artist.save
+    artist
+  end
+
+  def songs
+    @songs
+  end
+
+  def add_song(song)
+    if song.artist == nil
+      song.artist = self
+    else
+      nil
     end
+    if @songs.include?(song)
+      nil
+    else
+      @songs << song
+    end
+    song
+  end
 
-    def self.all
-     @@all
-   end
+  def genres
+    @new_array = []
+    @songs.each do |song|
+      if @new_array.include?(song.genre)
+        nil
+      else
+        @new_array << song.genre
+      end
+    end
+    @new_array
+  end
 
-    def self.destroy_all
-     self.all.clear
-   end
-
-    def save
-     @@all << self
-   end
-
-    def self.create(name)
-      Artist.new(name)
-   end
-
-    def add_song(song)
-      self.songs << song unless songs.include?(song)
-      song.artist = self if song.artist.nil?
-   end
-
-    def genres
-     genres = self.songs.collect do |song|
-       song.genre
-     end
-     genres.uniq
-   end
 end
